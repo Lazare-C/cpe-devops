@@ -1,0 +1,40 @@
+version: "3.7"
+
+services:
+  backend:
+    build:
+      context: ./backend
+    networks:
+      - my-network
+    env_file: .env
+    depends_on:
+      - database
+    hostname: backend
+
+  database:
+    build:
+      context: ./postgres
+    networks:
+      - my-network
+    volumes:
+      - devops-postgres:/var/lib/postgresql/data
+    env_file: .env
+    hostname: postgres
+
+  httpd:
+    build:
+      context: ./proxy
+    ports:
+      - "80:80"
+    networks:
+      - my-network
+    env_file: .env
+    depends_on:
+      - backend
+    hostname: proxy
+
+networks:
+  my-network:
+
+volumes:
+  devops-postgres:
