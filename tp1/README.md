@@ -3,6 +3,7 @@
 ## Postgres
 
 on build postgres `docker build -t lazarec/postgres postgres`
+on build postgres `docker build -t lazarec/postgres postgres`
 
 on créer un réseau docker: `docker network create app-network`
 
@@ -75,6 +76,7 @@ COPY pom.xml .
 COPY src ./src
 # On télécharge les dépendances
 #RUN mvn dependency:go-offline
+# on build l'application avec maven
 # on build l'application avec maven
 RUN mvn package -DskipTests
 
