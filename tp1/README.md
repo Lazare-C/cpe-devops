@@ -3,7 +3,6 @@
 ## Postgres
 
 on build postgres `docker build -t lazarec/postgres postgres`
-on build postgres `docker build -t lazarec/postgres postgres`
 
 On crée un réseau docker: `docker network create app-network`
 
@@ -198,3 +197,12 @@ networks:
 volumes:
   devops-postgres:
 ```
+
+## Publication
+
+**1-5 Document your publication commands and published images in dockerhub.**
+
+- On créer un compte dockerhub
+- on récupère un token de afin de connecter le cli
+- on tague l'image de la bd: `docker tag postgres lazarec/postgres:1.0 `
+- on push l'image sur le store dockerhub: `docker push lazarec/postgres:1.0`
