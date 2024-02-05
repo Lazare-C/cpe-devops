@@ -8,8 +8,7 @@ ENV POSTGRES_DB=db \
 
 
 # Copie des fichiers sql dans le répertoire d'initialisation de la base de données
-COPY CreateScheme.sql/ /docker-entrypoint-initdb.d/
-COPY InsertData.sql/ /docker-entrypoint-initdb.d/
+COPY init/. /docker-entrypoint-initdb.d/
 
 # Expose le port 5432
 EXPOSE 5432
