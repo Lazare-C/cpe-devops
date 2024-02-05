@@ -5,21 +5,21 @@
 on build postgres `docker build -t lazarec/postgres postgres`
 on build postgres `docker build -t lazarec/postgres postgres`
 
-on créer un réseau docker: `docker network create app-network`
+On crée un réseau docker: `docker network create app-network`
 
 on lance admier:
 
 ```bash
-        docker run \
-        -p "8090:8080" \
-        --net=app-network \
-        --name=adminer \
-        -d \
-        adminer
+        docker run \
+        -p "8090:8080" \
+        --net=app-network \
+        --name=adminer \
+        -d \
+        adminer
 
 ```
 
-on lance postgres:
+On lance postgres:
 
 ```bash
 docker run \
@@ -32,10 +32,10 @@ docker run \
 lazarec/postgres
 ```
 
-*Why do we need a volume to be attached to our postgres container?:*
-On à besoin de créer un volume afin de pouvoir supprimer le container et de persisster de la donnée
+**Why do we need a volume to be attached to our postgres container?:**
+On a besoin de créer un volume afin de pouvoir supprimer le container et de persister de la donnée.
 
-*1-1 Document your database container essentials: commands and Dockerfile.*
+**1-1 Document your database container essentials: commands and Dockerfile.**
 
 ```yaml
 
@@ -45,8 +45,8 @@ FROM postgres:14.1-alpine
 # Set environment variables
 # Valeur par défaut remplacé par le .env au moment du docker run
 ENV POSTGRES_DB=db \
-    POSTGRES_USER=usr \
-    POSTGRES_PASSWORD=pwd
+    POSTGRES_USER=usr \
+    POSTGRES_PASSWORD=pwd
 
 
 # Copie des fichiers sql dans le répertoire d'initialisation de la base de données
@@ -59,10 +59,10 @@ EXPOSE 5432
 
 ## Backend API
 
-*1-2 Why do we need a multistage build? And explain each step of this dockerfile.*
+**1-2 Why do we need a multistage build? And explain each step of this dockerfile.**
 Le fait d'utiliser des stages, dans ce cas la, permet de ne pas importer dans l'image final un JDK bien trop lourd avec Maven et les autres tools de build mais seulement un jdk leger pour lancer l'application final.
 
-On pourrait imaginer un système avec deux containers séparés avec un volume commun mais ca serait bien plus lourd et innutile comparé à des stages
+On pourrait imaginer un système avec deux containers séparés avec un volume commun, mais ça serait bien plus lourd et inutile comparé à des stages
 
 ```dockerfile
 # Build
@@ -85,9 +85,9 @@ RUN mvn package -DskipTests
 FROM amazoncorretto:17
 # on définie le workdir de l'image docker, les commandes seront exécutés dedans
 ENV MYAPP_HOME=/opt/myapp \
-    DB_CONFIG_URL=jdbc:postgresql://db:5432/db \
-    POSTGRES_USER=admin \
-    POSTGRES_PASSWORD=admin
+    DB_CONFIG_URL=jdbc:postgresql://db:5432/db \
+    POSTGRES_USER=admin \
+    POSTGRES_PASSWORD=admin
 WORKDIR $MYAPP_HOME
 # en deplace le jar build dans l'autre stage dans le répertoire courant
 COPY --from=myapp-build $MYAPP_HOME/target/*.jar $MYAPP_HOME/myapp.jar
@@ -115,7 +115,7 @@ lazarec/backend
 **Why do we need a reverse proxy?**
 Un reverse proxy permet plusieurs chose, dans notre cas il peut permettre dans notre cas, de passer de HTTP en HTTPS sans devoir gérer la partie SSL en java. Il permet aussi d'avoir plusieurs endpoints sur le même ports qui seront redigirer sur différents services (ou docker). Il permet aussi le load balancing et même faire de la sécurité.
 
-Pour avoir la config et la modifier je la récupère directement de l'image avec la commande: `docker run --rm httpd cat /usr/local/apache2/conf/httpd.conf > localhost.conf`
+Pour avoir la config et la modifier, je la récupère directement de l'image avec la commande : `docker run --rm httpd cat /usr/local/apache2/conf/httpd.conf > localhost.conf`
 
 on build le proxy: `docker build -t lazarec/proxy proxy`
 
@@ -134,7 +134,7 @@ lazarec/proxy
 
 **1-3 Document docker-compose most important commands.**
 
-`docker-compose up -d`: permet de lancer les services qui sont down et de se détacher pour que les containers tourent en arrière-plan
+`docker-compose up -d`: permet de lancer les services qui sont down et de se détacher pour que les containers tournent en arrière-plan
 
 `docker-compose down`: permet de stopper les services du docker compose ainsi que les networks ect...
 
@@ -150,51 +150,51 @@ version: "3.7"
 
 #liste des services
 services:
-  #service backend
-  backend:
-    #c'est un service à build avant de lancer, on lui donne le contexte
-    build:
-      context: ./backend
-    #on donne le network
-    networks:
-      - my-network
-    #on donne les variables d'env
-    env_file: .env
-    #on attend que la base de donnée soit en ligne
-    depends_on:
-      - database
-    #on précise le nom dans le réseau
-    hostname: backend
+  #service backend
+  backend:
+    #c'est un service à build avant de lancer, on lui donne le contexte
+    build:
+      context: ./backend
+    #on donne le network
+    networks:
+      - my-network
+    #on donne les variables d'env
+    env_file: .env
+    #on attend que la base de donnée soit en ligne
+    depends_on:
+      - database
+    #on précise le nom dans le réseau
+    hostname: backend
 
-  database:
-    build:
-      context: ./postgres
-    networks:
-      - my-network
-    #on indique le volume à utiliser
-    volumes:
-      - devops-postgres:/var/lib/postgresql/data
-    env_file: .env
-    hostname: postgres
+  database:
+    build:
+      context: ./postgres
+    networks:
+      - my-network
+    #on indique le volume à utiliser
+    volumes:
+      - devops-postgres:/var/lib/postgresql/data
+    env_file: .env
+    hostname: postgres
 
-  httpd:
-    build:
-      context: ./proxy
-    #on indique le port à ouvrir sur la machine host
-    ports:
-      - "80:80"
-    networks:
-      - my-network
-    env_file: .env
-    depends_on:
-      - backend
-    hostname: proxy
+  httpd:
+    build:
+      context: ./proxy
+    #on indique le port à ouvrir sur la machine host
+    ports:
+      - "80:80"
+    networks:
+      - my-network
+    env_file: .env
+    depends_on:
+      - backend
+    hostname: proxy
 
 #on initialise le network
 networks:
-  my-network:
+  my-network:
 
 #on initialise le volume de la bd
 volumes:
-  devops-postgres:
+  devops-postgres:
 ```
