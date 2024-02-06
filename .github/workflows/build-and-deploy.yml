@@ -2,12 +2,13 @@ name: Build and Push Docker Image
 on:
   workflow_run:
     workflows: ["Test Backend"]
+    branches: [main]
     types:
       - completed
 jobs:
   build-and-push-docker-image:
-    runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/main' && github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-22.04
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2.5.0
@@ -39,4 +40,4 @@ jobs:
           context: ./proxy
           # Note: tags has to be all lower-case
           tags:  ${{secrets.DOCKERHUB_USERNAME}}/proxy:latest  
-          push: ${{ github.ref == 'refs/heads/main' }}      # Définissez vos étapes ici
+          push: ${{ github.ref == 'refs/heads/main' }}
