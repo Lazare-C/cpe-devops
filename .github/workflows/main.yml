@@ -35,6 +35,7 @@ jobs:
   # define job to build and publish docker image
   build-and-push-docker-image:
     needs: test-backend
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code

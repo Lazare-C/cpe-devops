@@ -41,3 +41,6 @@ jobs:
 ```
 
 ## Sonar Quality Gate
+
+**Document your quality gate configuration.**
+J'utilise la liste de règle par defaut pour Java: Sonar way
