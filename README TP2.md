@@ -39,3 +39,5 @@ jobs:
         #on run maven clean verify dans le dossier du backend
         run: mvn clean verify --file ./backend/
 ```
+
+## Sonar Quality Gate
