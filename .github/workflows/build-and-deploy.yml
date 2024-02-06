@@ -40,4 +40,4 @@ jobs:
           context: ./proxy
           # Note: tags has to be all lower-case
           tags:  ${{secrets.DOCKERHUB_USERNAME}}/proxy:latest  
-          push: ${{ github.ref == 'refs/heads/main' }}      # Définissez vos étapes ici
+          push: ${{ github.ref == 'refs/heads/main' }}
