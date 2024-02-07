@@ -1,0 +1,22 @@
+name: Deploy with Ansible
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker Image"]
+    branches: [main]
+    types:
+      - completed
+jobs:
+  build-and-push-docker-image:
+    runs-on: ubuntu-22.04
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2.5.0
+
+      - name: Run playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+            playbook: deploy.yml
+            directory: ./ansible/
+            key: ${{secrets.SSH_PRIVATE_KEY}}
+            vault_password: ${{secrets.VAULT_PASSWORD}}

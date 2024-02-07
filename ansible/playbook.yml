@@ -1,13 +1,8 @@
 - hosts: all
   gather_facts: false
   become: true
-
-  vars:
-    docker_network_name: zuper_network
-    spring_db_url: jdbc:postgresql://postgres:5432/db
-    db_user: admin
-    db_pass: admin
-    db_db: db
+  vars_files: 
+    - vault.yml
 
   roles:
     - docker
