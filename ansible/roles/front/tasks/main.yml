@@ -4,6 +4,9 @@
   docker_container:
     name: front
     image: lazarec/front:latest
+    state: started 
+    recreate: true
+    pull: true
     networks:
       - name: "{{ docker_network_name }}"
   vars:

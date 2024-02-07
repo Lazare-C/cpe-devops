@@ -4,6 +4,9 @@
   docker_container:
     name: postgres
     image: lazarec/postgres:latest
+    state: started 
+    recreate: true
+    pull: true
     networks:
       - name: "{{ docker_network_name }}"
     env:
