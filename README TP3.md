@@ -82,3 +82,46 @@ on appel le role depuis notre playbook:
   roles:
     - docker
 ```
+
+**Document your docker_container tasks configuration.**
+
+Un example de configuration:
+
+```yml
+---
+# tasks file for roles/backend
+  # nom de la tache
+- name: Run Backend
+  #on utilise le module ansible "docker_container" 
+  docker_container:
+    #on nomme l'image
+    name: backend
+    #on indique qu'elle image pull sur dockerhub 
+    image: lazarec/backend:latest
+    # on selectionne un network commun, ici veriabilise dans le playbook
+    networks:
+      - name: "{{ docker_network_name }}"
+    # on définie nos variables d'env pour le docker
+    env:
+      POSTGRES_USER: "{{ db_user }}"
+      POSTGRES_PASSWORD: "{{ db_pass }}"
+      DB_CONFIG_URL: "{{ spring_db_url }}"
+    # pour les tests on recréer le docker
+    recreate: true
+      #on indique à ansible ou trouver l'interpréteur python
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+```
+
+on peut rajouter 
+
+```yaml
+    #pour ouvrir le port du proxy
+    port:
+        - "80:80"
+    # permet de créer un volume docker pour la base de donnée
+    volumes:
+      - postgres:/var/lib/postgresql/data
+```
+
+
