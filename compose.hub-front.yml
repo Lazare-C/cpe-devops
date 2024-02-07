@@ -1,0 +1,44 @@
+version: "3.7"
+
+services:
+  backend:
+    image: lazarec/backend:1.0
+    networks:
+      - my-network
+    env_file: .env
+    depends_on:
+      - database
+    hostname: backend
+
+  database:
+    image: lazarec/postgres:1.0
+    networks:
+      - my-network
+    volumes:
+      - devops-postgres:/var/lib/postgresql/data
+    env_file: .env
+    hostname: postgres
+
+  front:
+    image: lazarec/front:1.0
+    networks:
+      - my-network
+    env_file: .env
+    hostname: front
+
+  httpd:
+    image: lazarec/proxy:1.0
+    ports:
+      - "80:80"
+    networks:
+      - my-network
+    env_file: .env
+    depends_on:
+      - backend
+    hostname: proxy
+
+networks:
+  my-network:
+
+volumes:
+  devops-postgres:

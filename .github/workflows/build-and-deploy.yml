@@ -23,7 +23,7 @@ jobs:
           context: ./backend
           # Note: tags has to be all lower-case
           tags:  ${{secrets.DOCKERHUB_USERNAME}}/backend:latest
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: true
 
       - name: Build image and push postgres
         uses: docker/build-push-action@v3
@@ -32,7 +32,7 @@ jobs:
           context: ./postgres
           # Note: tags has to be all lower-case
           tags:  ${{secrets.DOCKERHUB_USERNAME}}/postgres:latest  
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: true
 
       - name: Build image and push proxy
         uses: docker/build-push-action@v3
@@ -40,4 +40,12 @@ jobs:
           context: ./proxy
           # Note: tags has to be all lower-case
           tags:  ${{secrets.DOCKERHUB_USERNAME}}/proxy:latest  
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: true
+
+      - name: Build image and push frontend
+        uses: docker/build-push-action@v3
+        with:
+          context: ./front
+          # Note: tags has to be all lower-case
+          tags:  ${{secrets.DOCKERHUB_USERNAME}}/front:latest  
+          push: true
