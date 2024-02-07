@@ -1,0 +1,12 @@
+---
+# tasks file for roles/proxy
+- name: Run Proxy
+  docker_container:
+    name: proxy
+    image: lazarec/proxy:latest
+    networks:
+      - name: "{{ docker_network_name }}"
+    ports:
+      - "80:80"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3

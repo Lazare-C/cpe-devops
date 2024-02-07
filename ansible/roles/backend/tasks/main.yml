@@ -1,0 +1,14 @@
+---
+# tasks file for roles/backend
+- name: Run Backend
+  docker_container:
+    name: backend
+    image: lazarec/backend:latest
+    networks:
+      - name: "{{ docker_network_name }}"
+    env:
+      POSTGRES_USER: "{{ db_user }}"
+      POSTGRES_PASSWORD: "{{ db_pass }}"
+      DB_CONFIG_URL: "{{ spring_db_url }}"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
