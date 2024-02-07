@@ -14,7 +14,7 @@ RUN npm run build
 
 FROM nginx:1.15.7-alpine
 
-ENV VUE_APP_API_URL=localhost:8081
+ENV VUE_APP_API_URL=/api
 EXPOSE 80
 
 
