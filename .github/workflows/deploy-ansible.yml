@@ -8,16 +8,27 @@ on:
 jobs:
   build-and-push-docker-image:
     runs-on: ubuntu-22.04
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    #if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v2.5.0
 
-      - name: Run playbook
-        uses: dawidd6/action-ansible-playbook@v2
-        with:
-            playbook: deploy.yml
-            directory: ./ansible
-        
-            key: ${{secrets.SSH_PRIVATE_KEY}}
-            vault_password: ${{secrets.VAULT_PASSWORD}}
+      - name: Setting up SSH key and vault password
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/private_key.pem
+          chmod 600 ~/private_key.pem
+          mkdir -p ~/.ssh/ && touch ~/.ssh/known_hosts
+          ssh-keyscan -t rsa,dsa,ecdsa,ed25519 lazare.chevereau.takima.cloud >> ~/.ssh/known_hosts
+
+      - name: Setting up Vault password
+        run: |
+          echo "${{ secrets.VAULT_PASSWORD }}" > ~/vault_pass.pem
+          chmod 600 ~/vault_pass.pem
+
+      - name: Run Ansible Playbook
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+          cd ./ansible
+          ansible-playbook -i ./inventories/setup.yml ./playbook.yml --private-key=~/private_key.pem --vault-password-file=~/vault_pass.pem
