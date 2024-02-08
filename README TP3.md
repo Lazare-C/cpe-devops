@@ -1,7 +1,6 @@
 # Ansible
 
 **3-1 Document your inventory and base commands**
-
 Pour le moment mon inventaire contient un seul groupe "all" qui définie une clé ssh, un nom d'utilisateur. Le groupe contient un enfant: la vm définie par l'host lazare.chevereau.takima.cloud
 
 - `ansible all -i inventories/setup.yml -m ping` : cette commande permet de vérifier la connectivité avec tous les hôtes de l'inventaire.
@@ -9,7 +8,6 @@ Pour le moment mon inventaire contient un seul groupe "all" qui définie une cl�
 - `ansible-galaxy init my_role` : afin de créer l'architecture d'un role
 
 **3-2 Document your playbook**
-
 pour la partie tasks, on en à qu'une seule: tasks/main.yml
 
 ```yml
@@ -84,7 +82,6 @@ on appel le role depuis notre playbook:
 ```
 
 **Document your docker_container tasks configuration.**
-
 Un example de configuration:
 
 ```yml
@@ -131,3 +128,28 @@ On utilise le docker donné où on change la variable d'env car elle sera utilis
 ## Load balancing
 
 On ajoute à la task du backend un 2ème runner et on mets à jour le virtuahost de httpd pour prendre en compte le loadbalancer.
+
+j'ajoute les modules néssésaires:
+
+```conf
+LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
+LoadModule slotmem_shm_module modules/mod_slotmem_shm.so
+LoadModule lbmethod_byrequests_module modules/mod_lbmethod_byrequests.so
+```
+
+et on modifie le virtualhost:
+
+```conf
+<Proxy "balancer://backencluster">
+    BalancerMember "http://backend-1:8080"
+    BalancerMember "http://backend-2:8080"
+</Proxy>
+
+<VirtualHost *:80>
+    ProxyPreserveHost On
+    ProxyPass /api/ balancer://backencluster/
+    ProxyPassReverse /api/ balancer://backencluster/
+    ProxyPass / http://front:80/
+    ProxyPassReverse / http://front:80/
+</VirtualHost>
+```
