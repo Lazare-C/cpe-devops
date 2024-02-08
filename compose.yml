@@ -9,7 +9,27 @@ services:
     env_file: .env
     depends_on:
       - database
-    hostname: backend
+    hostname: backend-1
+
+  backend2:
+    build:
+      context: ./backend
+    networks:
+      - my-network
+    env_file: .env
+    depends_on:
+      - database
+    hostname: backend-2
+
+
+  front:
+    build:
+      context: ./front
+    networks:
+      - my-network
+    depends_on:
+      - database
+    hostname: front
 
   database:
     build:

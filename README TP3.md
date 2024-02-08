@@ -126,4 +126,8 @@ on peut rajouter :
 
 ## Front
 
+On utilise le docker donné où on change la variable d'env car elle sera utilisé pendant le build de l'image docker donc, pas facilement changeable au moment du runtime
 
+## Load balancing
+
+On ajoute à la task du backend un 2ème runner et on mets à jour le virtuahost de httpd pour prendre en compte le loadbalancer.

@@ -44,3 +44,6 @@ jobs:
 
 **Document your quality gate configuration.**
 J'utilise la liste de règle par defaut pour Java: Sonar way
+
+La quality gate de sonar passe sans problèmes !
+[sonar summary](https://sonarcloud.io/summary/new_code?id=le-test_ici-ca-test)

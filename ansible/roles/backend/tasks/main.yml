@@ -1,11 +1,34 @@
 ---
 # tasks file for roles/backend
   # nom de la tache
-- name: Run Backend
+- name: Run Backend n1
   #on utilise le module ansible "docker_container" 
   docker_container:
     #on nomme l'image
-    name: backend
+    name: backend-1
+    #on indique qu'elle image pull sur dockerhub 
+    image: lazarec/backend:latest
+    # on selectionne un network commun, ici veriabilise dans le playbook
+    networks:
+      - name: "{{ docker_network_name }}"
+    # on définie nos variables d'env pour le docker
+    env:
+      POSTGRES_USER: "{{ db_user }}"
+      POSTGRES_PASSWORD: "{{ db_pass }}"
+      DB_CONFIG_URL: "{{ spring_db_url }}"
+    # pour les tests on recréer le docker
+    state: started 
+    recreate: true
+    pull: true
+      #on indique à ansible ou trouver l'interpréteur python
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: Run Backend n2
+  #on utilise le module ansible "docker_container" 
+  docker_container:
+    #on nomme l'image
+    name: backend-2
     #on indique qu'elle image pull sur dockerhub 
     image: lazarec/backend:latest
     # on selectionne un network commun, ici veriabilise dans le playbook
